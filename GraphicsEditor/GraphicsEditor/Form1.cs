@@ -13,7 +13,7 @@ namespace GraphicsEditor
     public partial class Form1 : Form
     {
         Bitmap bitmap, bitmapClone;
-        enum Tools { None, Line, Circle };
+        enum Tools { None, Line, Circle, Ellipse };
         Tools tool = Tools.None;
         int x0, y0;
         bool mouseDown = false;
@@ -37,6 +37,11 @@ namespace GraphicsEditor
             tool = Tools.Circle;
         }
 
+        private void btnEllipse_Click(object sender, EventArgs e)
+        {
+            tool = Tools.Ellipse;
+        }
+
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
         {
             if (tool != Tools.None)
@@ -53,10 +58,17 @@ namespace GraphicsEditor
             {
                 switch(tool)
                 {
-                    case Tools.Line:MyGraphics.myLine(x0, y0, e.X, e.Y, bitmap, pictureBox1, Color.Black);
+                    case Tools.Line:
+                        MyGraphics.myLine(x0, y0, e.X, e.Y, bitmap, pictureBox1, Color.Black);
                         break;
-                    case Tools.Circle:float r = (float) Math.Sqrt((e.X - x0) * (e.X - x0) + (e.Y - y0) * (e.Y - y0));
-                        MyGraphics.myCircle(x0, y0, r, bitmap, pictureBox1, Color.Black);
+                    case Tools.Circle:
+                        int xm = (x0 + e.X) / 2, ym = (y0 + e.Y) / 2;
+                        float r = (float)Math.Sqrt((e.X - xm) * (e.X - xm) + (e.Y - ym) * (e.Y - ym));
+                        MyGraphics.myCircle(xm, ym, r, bitmap, pictureBox1, Color.Black);
+                        break;
+                    case Tools.Ellipse:
+                        int a = Math.Abs(e.X - x0), b = Math.Abs(e.Y - y0);
+                        MyGraphics.myEllipse(x0, y0, a, b, bitmap, pictureBox1, Color.Black);
                         break;
                 }
                 mouseDown = false;
@@ -73,8 +85,13 @@ namespace GraphicsEditor
                         MyGraphics.myLine(x0, y0, e.X, e.Y, bitmap, pictureBox1, Color.Black);
                         break;
                     case Tools.Circle:
-                        float r = (float)Math.Sqrt((e.X - x0) * (e.X - x0) + (e.Y - y0) * (e.Y - y0));
-                        MyGraphics.myCircle(x0, y0, r, bitmap, pictureBox1, Color.Black);
+                        int xm=(x0+e.X)/2, ym=(y0+e.Y)/2;
+                        float r = (float)Math.Sqrt((e.X - xm) * (e.X - xm) + (e.Y - ym) * (e.Y - ym));
+                        MyGraphics.myCircle(xm, ym, r, bitmap, pictureBox1, Color.Black);
+                        break;
+                    case Tools.Ellipse:
+                        int a = Math.Abs(e.X - x0), b = Math.Abs(e.Y - y0);
+                        MyGraphics.myEllipse(x0, y0, a, b, bitmap, pictureBox1, Color.Black);
                         break;
                 }
                 bitmap = bitmapClone;

@@ -16,6 +16,7 @@ namespace GraphicsEditor
             int dl; //no of iteration
             int width = bitmap.Width - 1;
             int height = bitmap.Height - 1;
+
             //horizontal line
             if(y1 == y0)
             {
@@ -32,6 +33,7 @@ namespace GraphicsEditor
                 pictureBox.Image = bitmap;
                 return;
             }
+
             // vertical line
             if(x1 == x0)
             {
@@ -48,6 +50,7 @@ namespace GraphicsEditor
                 pictureBox.Image = bitmap;
                 return;
             }
+
             //slope line
             float xi = x0, yi = y0;
             float m = (float) (y1 - y0) / (x1 - x0);
@@ -92,5 +95,26 @@ namespace GraphicsEditor
             }
             pictureBox.Image = bitmap;
         } // end of myCircle
+
+        public static void myEllipse(int x0, int y0, int a, int b, Bitmap bitmap, PictureBox pictureBox, Color color)
+        {
+            int width = bitmap.Width - 1;
+            int height = bitmap.Height - 1;
+            int itteration;
+            float coefficient;
+            int xi, yi;
+            int max = Math.Max(a, b);
+            if (max <= 50) { itteration = 360; coefficient = 1; }
+            else if (max <= 100) { itteration = 720; coefficient = 0.5f; }
+            else { itteration = 1440; coefficient = 0.25f; }
+            for (int i = 0; i <= itteration; i++)
+            {
+                xi = (int)(x0 + a * Math.Cos(i * coefficient * Math.PI / 180));
+                yi = (int)(y0 + b * Math.Sin(i * coefficient * Math.PI / 180));
+                if ((xi > 1) && (xi < width) && (yi > 1) && (yi < height))
+                    bitmap.SetPixel(xi, yi, color);
+            }
+            pictureBox.Image = bitmap;
+        } // end of myEllipse
     }
 }
