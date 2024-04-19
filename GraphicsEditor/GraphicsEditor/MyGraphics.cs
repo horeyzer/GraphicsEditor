@@ -100,14 +100,14 @@ namespace GraphicsEditor
         {
             int width = bitmap.Width - 1;
             int height = bitmap.Height - 1;
-            int itteration;
+            int iteration;
             float coefficient;
             int xi, yi;
             int max = Math.Max(a, b);
-            if (max <= 50) { itteration = 360; coefficient = 1; }
-            else if (max <= 100) { itteration = 720; coefficient = 0.5f; }
-            else { itteration = 1440; coefficient = 0.25f; }
-            for (int i = 0; i <= itteration; i++)
+            if (max <= 50) { iteration = 360; coefficient = 1; }
+            else if (max <= 100) { iteration = 720; coefficient = 0.5f; }
+            else { iteration = 1440; coefficient = 0.25f; }
+            for (int i = 0; i <= iteration; i++)
             {
                 xi = (int)(x0 + a * Math.Cos(i * coefficient * Math.PI / 180));
                 yi = (int)(y0 + b * Math.Sin(i * coefficient * Math.PI / 180));
@@ -115,6 +115,40 @@ namespace GraphicsEditor
                     bitmap.SetPixel(xi, yi, color);
             }
             pictureBox.Image = bitmap;
-        } // end of myEllipse
+        }
+
+        public static void myFloodFill(int x, int y, Bitmap bitmap, Color fillColor, Color innerColor)
+        {
+            int width = bitmap.Width;
+            int height = bitmap.Height;
+
+            if (innerColor == fillColor)
+                return;
+
+            bool[,] visited = new bool[width, height]; // Track visited pixels
+
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+            stack.Push((x, y));
+
+            while (stack.Count > 0)
+            {
+                (int currentX, int currentY) = stack.Pop();
+
+                if (currentX < 0 || currentX >= width || currentY < 0 || currentY >= height || visited[currentX, currentY])
+                    continue;
+
+                visited[currentX, currentY] = true;
+
+                if (bitmap.GetPixel(currentX, currentY) != innerColor)
+                    continue;
+
+                bitmap.SetPixel(currentX, currentY, fillColor);
+
+                stack.Push((currentX + 1, currentY));
+                stack.Push((currentX - 1, currentY));
+                stack.Push((currentX, currentY + 1));
+                stack.Push((currentX, currentY - 1));
+            }
+        }
     }
 }
